@@ -2,5 +2,8 @@ TODO:
 
 THINK ABOUT:
 	- Simultaneous input from 2 clients or more (broadcast terminator)
+	- How to send characters and if it's not possible to make some sort of
+	  package structure where piece of data sent has info about it's position
+	  and which packet (not sure that this term applies here) it belongs here)
 
 DONE:

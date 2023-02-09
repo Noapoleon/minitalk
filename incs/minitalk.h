@@ -6,7 +6,7 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:21:36 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/08 13:16:35 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/09 17:24:23 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 
 # include "libft.h"
 # include <unistd.h>
+# include <signal.h>
+
+#include <stdio.h>
 
 # define USAGE_SERVER	"Usage: %s"
-# define USAGE_CLIENT	"Usage: %s <Server Pid> 
+# define USAGE_CLIENT	"Usage: %s <Server pid> <Message>"
 #endif

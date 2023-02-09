@@ -60,6 +60,7 @@ clean:
 fclean: clean
 	$(RM) $(SERVER)
 	$(RM) $(CLIENT)
+	$(RM) $(LIBDIR)/libft.a $(LIBDIR)/$(LIBFT)/libft.a
 
 re: fclean all
 
