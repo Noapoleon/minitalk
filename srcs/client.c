@@ -6,7 +6,7 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:22:01 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/09 22:39:26 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/09 22:57:32 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	send_char(unsigned char c, pid_t pid_server)
 				perror("[MINITALK] send_char > kill");
 				exit(EXIT_FAILURE);
 		}
-		ft_printf("sent something to server\n");
+		//ft_printf("sent something to server\n");
 		++i;
 		pause();
 	}

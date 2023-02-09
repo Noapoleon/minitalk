@@ -1,4 +1,8 @@
 TODO:
+	- [IMP] client loop change to allow longer than 2048 chars because if client sends
+	  more than 2048 characters server right now will crash
+	- server array for multiple client inputs AT THE SAME TIME, right now if two
+	  clients send things at the same time messages will probably be mixed
 
 THINK ABOUT:
 	- Simultaneous input from 2 clients or more (broadcast terminator)
