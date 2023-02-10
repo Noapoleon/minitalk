@@ -6,11 +6,13 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:22:01 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/09 22:57:32 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/10 11:54:44 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+volatile sig_atomic_t	g_response = 0;
 
 void	send_char(unsigned char c, pid_t pid_server)
 {
@@ -32,7 +34,9 @@ void	send_char(unsigned char c, pid_t pid_server)
 		}
 		//ft_printf("sent something to server\n");
 		++i;
-		pause();
+		while (g_response == 0)
+			pause();
+		g_response = 0;
 	}
 }
 
@@ -40,9 +44,10 @@ void	receive_server_confirmation(int signal, siginfo_t *info, void *other)
 {
 	// dont know if i can make it so that it only resumes when the signal comes from the server
 	// but it shouldn't even matter i think
-	(void)signal;
 	(void)info;
 	(void)other;
+	if (signal == SIGUSR1) // can i check if info->si_pid is that of the server??
+		g_response = 1;
 }
 
 int	main(int ac, char **av)

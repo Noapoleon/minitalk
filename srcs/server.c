@@ -6,7 +6,7 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:22:03 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/10 00:39:51 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/10 12:04:27 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,11 @@ void	receive_bit(int signal, siginfo_t *info, void *other) // look up what other
 	else if (signal == SIGUSR2)
 		bit = 0;
 	else // REMOVE LATER, THIS FOR DEBUG
-		ft_printf("WE GOT A PROBLEM HUSTON!\n");
+	{
+		ft_printf("WE GOT A PROBLEM HUSTON! UNKOWN SIGNAL!!\n");
+		ft_printf("Signal -> %d\n", signal);
+		exit(EXIT_FAILURE);
+	}
 	//character |= bit << ((sizeof(unsigned char) * 8 - 1) - shift);
 	character  |= bit << shift++;
 	//printf("shift -> %ld\n", shift);
@@ -43,7 +47,6 @@ void	receive_bit(int signal, siginfo_t *info, void *other) // look up what other
 		else if (index == MAX_MSG_SIZE)
 		{
 			write(1, message, MAX_MSG_SIZE);
-			write(1, "\0", 1);
 			//sleep(1);
 			index = 0;
 		}
@@ -74,6 +77,10 @@ int	main(int ac, char **av)
 	if (sigaction(SIGUSR2, &action, NULL) == -1)
 		return (ft_dprintf(2, "[ERROR] Failed to set SIGUSR1 handle.\n"), 0);
 	while (1)
+	{
+		//ft_printf("going to pause\n");
 		pause();
+		//ft_printf("received something\n");
+	}
 	return (0);
 }
