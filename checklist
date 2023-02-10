@@ -1,8 +1,10 @@
 TODO:
-	- [IMP] client loop change to allow longer than 2048 chars because if client sends
-	  more than 2048 characters server right now will crash
+	- [IMP] client loop change to allow longer than 2048 chars because if client
+	  sends more than 2048 characters server right now will crash
 	- server array for multiple client inputs AT THE SAME TIME, right now if two
 	  clients send things at the same time messages will probably be mixed
+	- if server doesn't receive \0 byte withing 3 seconds report and error and
+	  free s_cli_msg struct from list;
 
 THINK ABOUT:
 	- Simultaneous input from 2 clients or more (broadcast terminator)
@@ -11,5 +13,14 @@ THINK ABOUT:
 	  and which packet (not sure that this term applies here) it belongs here)
 	- What victordinateur did about pid being too high and if that is actually
 	  a problem or none at all
+	- protect minitalk from someone entering the wrong pid or entering something
+	  like -1 which would be desastrous
+	- grep for forbidden functions: printf, perror, atoi
+
+WAYS TO CRASH/LEAK MINITALK:
+	- Server:
+		* fake client sends non null terminated string -> server will never free
+		  the client struct
+		* 
 
 DONE:

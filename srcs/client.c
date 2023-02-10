@@ -6,7 +6,7 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:22:01 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/10 11:54:44 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/10 16:31:33 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ void	send_char(unsigned char c, pid_t pid_server)
 			ret = kill(pid_server, SIGUSR2);
 		if (ret != 0)
 		{
-				perror("[MINITALK] send_char > kill");
-				exit(EXIT_FAILURE);
+			ft_dprintf(STDERR_FILENO,
+				"[MINITALK] Failed to communicate with server %d", pid_server);
+			exit(EXIT_FAILURE);
 		}
 		//ft_printf("sent something to server\n");
 		++i;
@@ -58,13 +59,15 @@ int	main(int ac, char **av)
 
 	if (ac != 3)
 		return (ft_printf(USAGE_CLIENT, av[0]), 0);
-	//ft_printf("pid of client is %d\n", getpid());
 	if (sigemptyset(&action.sa_mask) == -1)
-		return (ft_dprintf(2, "[ERROR] Failed to initialize sigaction.\n"), 0);
+		return (ft_dprintf(STDERR_FILENO,
+			"[ERROR] Failed to initialize sigaction.\n"), 0);
 	action.sa_sigaction = &receive_server_confirmation;
 	action.sa_flags = SA_SIGINFO;
+	action.sa_flags = SA_RESTART;
 	if (sigaction(SIGUSR1, &action, NULL) == -1)
-		return (ft_dprintf(2, "[ERROR] Failed to set SIGUSR1 handle.\n"), 0);
+		return (ft_dprintf(STDERR_FILENO,
+			"[ERROR] Failed to set SIGUSR1 handle.\n"), 0);
 	pid_server = ft_atoi(av[1]);
 	i = 0;
 	while (av[2][i])
