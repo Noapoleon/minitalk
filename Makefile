@@ -10,7 +10,8 @@ LIBFT	=	libft
 
 # Files
 SRCS_SERVER	:=	server.c \
-				client_list.c
+				client_list.c \
+				client_list2.c
 OBJS_SERVER	:=	$(SRCS_SERVER:.c=.o)
 SRCS_SERVER	:=	$(addprefix $(SRCDIR)/, $(SRCS_SERVER))
 OBJS_SERVER	:=	$(addprefix $(OBJDIR)/, $(OBJS_SERVER))

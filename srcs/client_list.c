@@ -6,12 +6,13 @@
 /*   By: nlegrand <nlegrand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/10 13:20:38 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/10 16:48:40 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/10 21:37:41 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
+// Allocates a new client struct and puts it to the front of the list
 t_client_list	*client_new_front(t_client_list **begin, const pid_t pid)
 {
 	t_client_list	*tmp;
@@ -35,6 +36,7 @@ t_client_list	*client_new_front(t_client_list **begin, const pid_t pid)
 	return (tmp);
 }
 
+// Finds a client by it's pid in the clients list
 t_client_list	*client_get_pid(const t_client_list *begin, const pid_t pid)
 {
 	t_client_list	*curr;
@@ -49,6 +51,8 @@ t_client_list	*client_get_pid(const t_client_list *begin, const pid_t pid)
 	return (curr);
 }
 
+// Finds a client in the list based on its pid, if it doesn't exist yet it
+// safely allocates a new one
 t_client_list	*client_get(t_client_list **begin, const pid_t pid)
 {
 	t_client_list	*curr;
@@ -63,6 +67,7 @@ t_client_list	*client_get(t_client_list **begin, const pid_t pid)
 	return (curr);
 }
 
+// Frees a client message list
 void	client_msg_remove(t_client_list *client)
 {
 	t_msgbuf_list	*tmp;
@@ -75,6 +80,7 @@ void	client_msg_remove(t_client_list *client)
 	}
 }
 
+// Properly frees a client struct and its elements
 void	client_remove(t_client_list **begin, t_client_list *remove)
 {
 	t_client_list	*prev;
@@ -93,14 +99,3 @@ void	client_remove(t_client_list **begin, t_client_list *remove)
 	client_msg_remove(remove);
 	free(remove);
 }
-
-t_msgbuf_list	*client_msgbuf_new(t_client_list *client)
-{
-	client->last_buf->next = malloc(sizeof(t_msgbuf_list));
-	if (client->last_buf->next == NULL)
-		return (NULL);
-	client->last_buf->next->next = NULL;
-	client->last_buf = client->last_buf->next;
-	return (client->last_buf);
-}
-
