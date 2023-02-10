@@ -3,6 +3,7 @@ TODO:
 	  more than 2048 characters server right now will crash
 	- server array for multiple client inputs AT THE SAME TIME, right now if two
 	  clients send things at the same time messages will probably be mixed
+	- send siguser2 a client in case of error
 
 THINK ABOUT:
 	- Simultaneous input from 2 clients or more (broadcast terminator)

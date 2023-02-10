@@ -6,7 +6,7 @@
 /*   By: nlegrand <nlegrand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 17:48:35 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/01/28 13:06:36 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/10 16:37:11 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <limits.h>
 # include <stdarg.h>
+# include <stdio.h>
 
 // -----------------------//
 //       BASE LIBFT       //
@@ -111,7 +112,7 @@ int		gnl_w(int fd, char **line);
 
 // SETTINGS
 # ifndef PRINT_FD
-#  define PRINT_FD 1
+#  define PRINT_FD STDOUT_FILENO
 # endif
 # ifndef PRINT_SIZE
 #  define PRINT_SIZE 1024

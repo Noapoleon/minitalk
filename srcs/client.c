@@ -6,13 +6,13 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:22:01 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/10 11:54:44 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/10 18:52:57 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-volatile sig_atomic_t	g_response = 0;
+static volatile sig_atomic_t	g_response[2];
 
 void	send_char(unsigned char c, pid_t pid_server)
 {
@@ -32,44 +32,38 @@ void	send_char(unsigned char c, pid_t pid_server)
 				perror("[MINITALK] send_char > kill");
 				exit(EXIT_FAILURE);
 		}
-		//ft_printf("sent something to server\n");
 		++i;
-		while (g_response == 0)
+		while (g_response[1] == 0)
 			pause();
-		g_response = 0;
+		g_response[1] = 0;
 	}
 }
 
 void	receive_server_confirmation(int signal, siginfo_t *info, void *other)
 {
-	// dont know if i can make it so that it only resumes when the signal comes from the server
-	// but it shouldn't even matter i think
-	(void)info;
 	(void)other;
-	if (signal == SIGUSR1) // can i check if info->si_pid is that of the server??
-		g_response = 1;
+	if (signal == SIGUSR1 && info->si_pid == g_response[0]) // can i check if info->si_pid is that of the server??
+		g_response[1] = 1;
 }
 
 int	main(int ac, char **av)
 {
-	pid_t			pid_server;
 	size_t			i;
 	struct sigaction	action;
 
 	if (ac != 3)
 		return (ft_printf(USAGE_CLIENT, av[0]), 0);
-	//ft_printf("pid of client is %d\n", getpid());
 	if (sigemptyset(&action.sa_mask) == -1)
 		return (ft_dprintf(2, "[ERROR] Failed to initialize sigaction.\n"), 0);
 	action.sa_sigaction = &receive_server_confirmation;
 	action.sa_flags = SA_SIGINFO;
 	if (sigaction(SIGUSR1, &action, NULL) == -1)
 		return (ft_dprintf(2, "[ERROR] Failed to set SIGUSR1 handle.\n"), 0);
-	pid_server = ft_atoi(av[1]);
+	g_response[0] = ft_atoi(av[1]);
 	i = 0;
 	while (av[2][i])
-		send_char(av[2][i++], pid_server);
-	send_char('\0', pid_server);
+		send_char(av[2][i++], g_response[0]);
+	send_char('\0', g_response[0]);
 	ft_printf("Server finished receiving message.\n");
 	return (0);
 }
