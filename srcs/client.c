@@ -6,7 +6,7 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:22:01 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/10 22:43:36 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/11 13:12:22 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	send_char(unsigned char c)
 		if (ret != 0)
 		{
 			ft_dprintf(STDERR_FILENO,
-				"[MT ERROR] Failed to communicate with server");
+				"[MT ERROR] Failed to communicate with server of pid %d\n",
+				g_response[0]);
 			exit(EXIT_FAILURE);
 		}
 		++i;
@@ -44,10 +45,10 @@ void	send_char(unsigned char c)
 
 // Handler function for SIGUSR1
 // Server sends back a confirmation message once it received a bit
-void	receive_server_confirmation(int signal, siginfo_t *info, void *other)
+void	receive_server_confirmation(int signal, siginfo_t *info, void *context)
 {
-	(void)other;
-	if (signal == SIGUSR1 && info->si_pid == g_response[0]) // can i check if info->si_pid is that of the server??
+	(void)context;
+	if (signal == SIGUSR1 && info->si_pid == g_response[0])
 		g_response[1] = 1;
 }
 
@@ -62,9 +63,9 @@ int	main(int ac, char **av)
 	if (sigemptyset(&action.sa_mask) == -1)
 		return (ft_dprintf(STDERR_FILENO,
 			"[MT ERROR] Failed to initialize sigaction\n"), 0);
-	action.sa_sigaction = &receive_server_confirmation;
 	action.sa_flags = SA_SIGINFO;
-	action.sa_flags = SA_RESTART;
+	action.sa_flags |= SA_RESTART;
+	action.sa_sigaction = &receive_server_confirmation;
 	if (sigaction(SIGUSR1, &action, NULL) == -1)
 		return (ft_dprintf(STDERR_FILENO,
 			"[MT ERROR] Failed to set SIGUSR1 handle\n"), 0);

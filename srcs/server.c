@@ -6,7 +6,7 @@
 /*   By: nlegrand <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 09:22:03 by nlegrand          #+#    #+#             */
-/*   Updated: 2023/02/10 22:58:54 by nlegrand         ###   ########.fr       */
+/*   Updated: 2023/02/11 13:12:14 by nlegrand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ void	save_char(t_client_list **begin, t_client_list *client)
 }
 
 // Handle function for SIGUSR1 and SIGUSR2
-void	receive_bit(int signal, siginfo_t *info, void *other) // look up what other is for here
+void	receive_bit(int signal, siginfo_t *info, void *context)
 {
 	static t_client_list	*clients;
 	t_client_list			*curr;
 	unsigned char			bit;
 
-	(void)other;
+	(void)context;
 	curr = client_get(&clients, info->si_pid);
 	if (curr == NULL)
 	{
@@ -74,7 +74,8 @@ void	receive_bit(int signal, siginfo_t *info, void *other) // look up what other
 	if (kill(info->si_pid, SIGUSR1) == -1)
 	{
 		ft_dprintf(STDERR_FILENO,
-			"[MT ERROR] Failed to send confirmation to client");
+			"[MT ERROR] Failed to send confirmation to client of pid %d\n",
+			info->si_pid);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -90,8 +91,9 @@ int	main(int ac, char **av)
 	if (sigemptyset(&action.sa_mask) == -1)
 		return (ft_dprintf(2,
 			"[MT ERROR] Failed to initialize sigaction\n"), 0);
-	action.sa_sigaction = &receive_bit;
 	action.sa_flags = SA_SIGINFO;
+	action.sa_flags |= SA_RESTART;
+	action.sa_sigaction = &receive_bit;
 	if (sigaction(SIGUSR1, &action, NULL) == -1)
 		return (ft_dprintf(2, "[MT ERROR] Failed to set SIGUSR1 handle\n"), 0);
 	if (sigaction(SIGUSR2, &action, NULL) == -1)
